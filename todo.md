@@ -1,0 +1,7 @@
+- [x] setup server and project structure
+- [x] setup air - live reloading
+- [x] setup config / env
+- [x] integrate database
+- [x] build auth module
+- [x] add prefix to routes
+- [x] follow clean modular monolithic architecture
