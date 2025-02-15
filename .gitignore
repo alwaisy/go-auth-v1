@@ -1,0 +1,25 @@
+# Go build artifacts
+/bin
+/pkg
+/vendor
+
+# Makefile artifacts
+/Makefile
+/makefile
+/makefile.*
+
+# Air artifacts
+/.air
+/air.log
+
+# IDE and editor files
+/.idea
+/.vscode
+/.gitignore
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Go test files
+*_test.go
