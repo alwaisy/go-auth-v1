@@ -8,5 +8,4 @@ func main() {
 	app := server.MainApp()
 
 	app.Start()
-
 }
