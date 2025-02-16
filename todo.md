@@ -1,7 +1,12 @@
 - [x] setup server and project structure
 - [x] setup air - live reloading
+- [x] setup logging
 - [x] setup config / env
 - [x] integrate database
 - [x] build auth module
 - [x] add prefix to routes
 - [x] follow clean modular monolithic architecture
+- [x] setup graceful shutdown
+- [] add custom errors
+  - failed to do add custom errors
+- []

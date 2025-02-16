@@ -6,7 +6,15 @@ import (
 	"net/http"
 )
 
-func HandleSignup(w http.ResponseWriter, r *http.Request) {
+type Handler struct {
+	service *Service
+}
+
+func NewAuthHandler(service *Service) *Handler {
+	return &Handler{service: service}
+}
+
+func (h *Handler) HandleSignup(w http.ResponseWriter, r *http.Request) {
 	var input UserStoreSchema
 
 	// Parse request body
@@ -28,7 +36,8 @@ func HandleSignup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Call AuthService to create user
-	user, err := CreateUser(input)
+	user, err := h.service.CreateUser(input)
+
 	if err != nil {
 		network.SendErrorResponse(w, "INTERNAL_ERROR", "Could not create user", http.StatusInternalServerError)
 		return

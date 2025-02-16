@@ -1,7 +1,14 @@
 package auth
 
-import "net/http"
+import (
+	"gorm.io/gorm"
+	"net/http"
+)
 
-func Init(router *http.ServeMux, basePath string) {
-	SetupAuthRoutes(router, basePath)
+func Init(db *gorm.DB, router *http.ServeMux, basePath string) {
+	repo := NewAuthRepository(db)
+	service := NewAuthService(repo)
+	handler := NewAuthHandler(service)
+
+	SetupAuthRoutes(router, basePath, handler)
 }

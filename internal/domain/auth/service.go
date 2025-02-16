@@ -4,7 +4,15 @@ import (
 	"go-auth-v1/pkg/random"
 )
 
-func CreateUser(input UserStoreSchema) (User, error) {
+type Service struct {
+	repo *Repository
+}
+
+func NewAuthService(repo *Repository) *Service {
+	return &Service{repo: repo}
+}
+
+func (s *Service) CreateUser(input UserStoreSchema) (User, error) {
 	id := random.NewRandomID()
 
 	user := User{
@@ -18,6 +26,7 @@ func CreateUser(input UserStoreSchema) (User, error) {
 		CreatedAt:    random.NewRandomTime(),
 		UpdatedAt:    random.NewRandomTime(),
 	}
+
 	// Hash password
 
 	// Create user record

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"go-auth-v1/internal/config"
-	"go-auth-v1/internal/database"
+	"go-auth-v1/internal/db"
 	"go-auth-v1/internal/domain/auth"
 	"log"
 	"net/http"
@@ -20,13 +20,14 @@ type App struct {
 	Server *http.Server
 }
 
-// MainApp initializes the app
-func MainApp() *App {
+// NewApp function initializes the app
+func NewApp() *App {
 	// Load config
 	cfg := config.LoadConfig(".")
 
-	// Initialize database
-	database.ConnectDB()
+	// Initialize db
+	//db.ConnectDB()
+	dbInstance, _ := db.InitDB()
 
 	// Get port from config (default: 8888)
 	PORT := cfg.Server.Port
@@ -47,7 +48,7 @@ func MainApp() *App {
 	}
 
 	// Initialize authentication routes
-	auth.Init(mux, "/api/v1/auth")
+	auth.Init(dbInstance, mux, "/api/v1/auth")
 
 	return &App{
 		Server: server,
@@ -96,8 +97,8 @@ func handleGracefulShutdown(server *http.Server) {
 		log.Fatalf("Server forced to shutdown: %v", err)
 	}
 
-	// Close database connections
-	database.CloseDB()
+	// Close db connections
+	db.CloseDB()
 
 	fmt.Println("Server shutdown complete.")
 }
