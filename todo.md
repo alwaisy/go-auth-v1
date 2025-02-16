@@ -10,3 +10,8 @@
 - [] add custom errors
   - failed to do add custom errors
 - [x] introduce dependency injection
+- [x] make db schema to auto-migrate
+- [x] make first db request
+- [] check for existing user
+- [] add jwt token auth
+- [] add password reset
