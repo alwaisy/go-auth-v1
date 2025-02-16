@@ -9,4 +9,4 @@
 - [x] setup graceful shutdown
 - [] add custom errors
   - failed to do add custom errors
-- []
+- [x] introduce dependency injection

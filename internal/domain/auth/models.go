@@ -1,9 +1,10 @@
 package auth
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 type User struct {
@@ -15,14 +16,22 @@ type User struct {
 	Role         string    `gorm:"type:varchar(255);not null;default:'user'" json:"role"`
 	PasswordHash string    `gorm:"type:varchar(255);not null" json:"-"`
 	IsVerified   bool      `gorm:"default:false" json:"is_verified"`
-	CreatedAt    time.Time `gorm:"type:timestamp;default:current_timestamp" json:"created_at"`
-	UpdatedAt    time.Time `gorm:"type:timestamp;default:current_timestamp on update current_timestamp" json:"updated_at"`
+	CreatedAt    time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt    time.Time `gorm:"type:timestamp" json:"updated_at"`
 }
 
-// BeforeCreate hook to set UUID before inserting a new record
+// BeforeCreate hook to set UUID and timestamps
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	if u.ID == uuid.Nil {
 		u.ID = uuid.New()
 	}
-	return
+	u.CreatedAt = time.Now()
+	u.UpdatedAt = time.Now()
+	return nil
+}
+
+// BeforeUpdate hook to update UpdatedAt timestamp
+func (u *User) BeforeUpdate(tx *gorm.DB) (err error) {
+	u.UpdatedAt = time.Now()
+	return nil
 }

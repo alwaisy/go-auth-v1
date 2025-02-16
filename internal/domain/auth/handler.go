@@ -37,7 +37,6 @@ func (h *Handler) HandleSignup(w http.ResponseWriter, r *http.Request) {
 
 	// Call AuthService to create user
 	user, err := h.service.CreateUser(input)
-
 	if err != nil {
 		network.SendErrorResponse(w, "INTERNAL_ERROR", "Could not create user", http.StatusInternalServerError)
 		return
