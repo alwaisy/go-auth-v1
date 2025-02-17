@@ -3,8 +3,10 @@ package auth
 import (
 	"errors"
 	"fmt"
+	customErr "go-auth-v1/pkg/errors"
 	"go-auth-v1/pkg/random"
 	"go-auth-v1/pkg/security"
+	"time"
 )
 
 type Service struct {
@@ -15,13 +17,14 @@ func NewAuthService(repo *Repository) *Service {
 	return &Service{repo: repo}
 }
 
-func (s *Service) CreateUser(input UserStoreSchema) (*User, error) {
+func (s *Service) Register(input UserStoreSchema) (*User, error) {
 	// Check for existing user
 	for field, value := range map[string]string{"email": input.Email, "username": input.Username} {
 		if exists, err := s.repo.CheckUser(field, value); err != nil {
 			return nil, err
 		} else if exists {
-			return nil, errors.New(fmt.Sprintf("%s already taken", field)) // Ensure this gives precise error details
+			// Ensure this gives precise error details
+			return nil, errors.New(fmt.Sprintf("%s already used", field))
 		}
 	}
 
@@ -47,7 +50,31 @@ func (s *Service) CreateUser(input UserStoreSchema) (*User, error) {
 	}
 
 	// Create user record
-	err = s.repo.Store(user)
+	err = s.repo.CreateUser(user)
 
 	return user, nil
+}
+
+func (s *Service) Login(input UserLoginSchema) (string, error) {
+	// check email existence
+	user, err := s.repo.ShowUserByEmail(input.Email)
+	if err != nil {
+		return "", customErr.ErrInvalidCredentials
+	}
+
+	// compare password
+	isMatched := security.VerifyPassword(user.PasswordHash, input.Password)
+	if !isMatched {
+		return "", customErr.ErrInvalidCredentials
+	}
+
+	userData := map[string]interface{}{
+		"id":    user.ID,
+		"email": input.Email,
+	}
+
+	// generate token
+	token, err := security.GenerateJWT(userData, 30*time.Minute, false)
+
+	return token, nil
 }

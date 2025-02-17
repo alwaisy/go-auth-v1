@@ -13,5 +13,9 @@
 - [x] make db schema to auto-migrate
 - [x] make first db request
 - [x] check for existing user
-- [] add jwt token auth
+- [x] verify email & password for login
+- [] jwt auth token
+  - [x] write generate token func
+  - [x] integrate in login func
+  - [x] set cookies header
 - [] add password reset

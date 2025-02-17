@@ -14,7 +14,7 @@ func NewAuthRepository(db *gorm.DB) *Repository {
 	return &Repository{db: db}
 }
 
-func (r *Repository) Store(user *User) error {
+func (r *Repository) CreateUser(user *User) error {
 	return r.db.Create(user).Error
 }
 
@@ -31,4 +31,13 @@ func (r *Repository) CheckUser(field, value string) (bool, error) {
 
 	return true, nil // User exists
 
+}
+
+func (r *Repository) ShowUserByEmail(email string) (*User, error) {
+	var user User
+	err := r.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

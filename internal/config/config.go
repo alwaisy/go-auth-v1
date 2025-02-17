@@ -11,8 +11,11 @@ type AppConfig struct {
 }
 
 type DatabaseConfig struct {
-	Debug       int    `mapstructure:"DB_DEBUG"`
 	DatabaseUrl string `mapstructure:"DATABASE_URL"`
+}
+
+type AuthConfig struct {
+	JwtSecret string `mapstructure:"JWT_SECRET"`
 }
 
 type RabbitConfig struct {
@@ -31,6 +34,7 @@ type ServerConfig struct {
 type Config struct {
 	App      AppConfig      `mapstructure:",squash"`
 	Database DatabaseConfig `mapstructure:",squash"`
+	Auth     AuthConfig     `mapstructure:",squash"`
 	Rabbit   RabbitConfig   `mapstructure:",squash"`
 	Redis    RedisConfig    `mapstructure:",squash"`
 	Server   ServerConfig   `mapstructure:",squash"`
