@@ -38,10 +38,12 @@ func (h *Handler) HandleSignup(w http.ResponseWriter, r *http.Request) {
 	// Call AuthService to create user
 	user, err := h.service.CreateUser(input)
 	if err != nil {
-		network.SendErrorResponse(w, "INTERNAL_ERROR", "Could not create user", http.StatusInternalServerError)
+		// Return specific error message from service
+		network.SendErrorResponse(w, "USER_CREATION_ERROR", err.Error(), http.StatusConflict)
 		return
 	}
 
+	// Successful response
 	network.SendJSONResponse(w, network.Response{
 		Code: "SUCCESS",
 		Msg:  "User created successfully",

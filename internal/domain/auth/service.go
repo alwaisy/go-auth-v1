@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"errors"
+	"fmt"
 	"go-auth-v1/pkg/random"
 	"go-auth-v1/pkg/security"
 )
@@ -14,6 +16,15 @@ func NewAuthService(repo *Repository) *Service {
 }
 
 func (s *Service) CreateUser(input UserStoreSchema) (*User, error) {
+	// Check for existing user
+	for field, value := range map[string]string{"email": input.Email, "username": input.Username} {
+		if exists, err := s.repo.CheckUser(field, value); err != nil {
+			return nil, err
+		} else if exists {
+			return nil, errors.New(fmt.Sprintf("%s already taken", field)) // Ensure this gives precise error details
+		}
+	}
+
 	id := random.NewRandomID()
 
 	// Hash password
@@ -36,7 +47,7 @@ func (s *Service) CreateUser(input UserStoreSchema) (*User, error) {
 	}
 
 	// Create user record
-	err = s.repo.Index(user)
+	err = s.repo.Store(user)
 
 	return user, nil
 }

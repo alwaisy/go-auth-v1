@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"errors"
+	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -12,6 +14,21 @@ func NewAuthRepository(db *gorm.DB) *Repository {
 	return &Repository{db: db}
 }
 
-func (r *Repository) Index(user *User) error {
+func (r *Repository) Store(user *User) error {
 	return r.db.Create(user).Error
+}
+
+func (r *Repository) CheckUser(field, value string) (bool, error) {
+	var user User
+	err := r.db.Where(fmt.Sprintf("%s = ?", field), value).First(&user).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil // User does not exist
+		}
+		return false, err // Other DB errors
+	}
+
+	return true, nil // User exists
+
 }
